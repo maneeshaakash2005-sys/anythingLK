@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 200" role="img" aria-label="Catalog template desktop preview">
+  <rect width="360" height="200" fill="#fafafa"/>
+  <rect x="16" y="14" width="200" height="22" rx="5" fill="#7c3aed" opacity="0.85"/>
+  <g>
+    <rect x="16" y="48" width="100" height="72" rx="6" fill="#fff" stroke="#e2e8f0"/>
+    <rect x="24" y="56" width="84" height="40" rx="4" fill="#e2e8f0"/>
+    <rect x="24" y="102" width="60" height="8" rx="2" fill="#cbd5e1"/>
+    <rect x="124" y="48" width="100" height="72" rx="6" fill="#fff" stroke="#e2e8f0"/>
+    <rect x="132" y="56" width="84" height="40" rx="4" fill="#e2e8f0"/>
+    <rect x="132" y="102" width="60" height="8" rx="2" fill="#cbd5e1"/>
+    <rect x="232" y="48" width="100" height="72" rx="6" fill="#fff" stroke="#e2e8f0"/>
+    <rect x="240" y="56" width="84" height="40" rx="4" fill="#e2e8f0"/>
+    <rect x="240" y="102" width="60" height="8" rx="2" fill="#cbd5e1"/>
+  </g>
+  <rect x="16" y="132" width="328" height="52" rx="6" fill="#fff" stroke="#e2e8f0"/>
+  <rect x="240" y="148" width="88" height="20" rx="6" fill="#7c3aed"/>
+</svg>
