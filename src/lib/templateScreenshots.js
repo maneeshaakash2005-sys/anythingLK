@@ -53,3 +53,32 @@ export const TEMPLATE_FEATURES = {
   restaurant: ['Menu layout', 'Reservation ready', 'Gold accents', 'Sophisticated'],
   'premium-business': ['B2B ready', 'Professional', 'Blue theme', 'Enterprise grade'],
 };
+
+/**
+ * Get screenshot URL for a template
+ * Returns Unsplash image URL for desktop/mobile preview
+ */
+export function getTemplateScreenshotUrl(templateKey, mode = 'desktop') {
+  const baseUrl = TEMPLATE_SCREENSHOTS[templateKey];
+  if (!baseUrl) return null;
+  
+  // For mobile, use smaller width in URL
+  if (mode === 'mobile') {
+    return baseUrl.replace('w=400', 'w=300');
+  }
+  return baseUrl;
+}
+
+/**
+ * Get template category label
+ */
+export function getTemplateCategory(templateKey) {
+  return TEMPLATE_CATEGORIES[templateKey] || 'Custom';
+}
+
+/**
+ * Get template feature list
+ */
+export function getTemplateFeatures(templateKey) {
+  return TEMPLATE_FEATURES[templateKey] || ['Custom template', 'Shop-specific styling', 'Full customization'];
+}
