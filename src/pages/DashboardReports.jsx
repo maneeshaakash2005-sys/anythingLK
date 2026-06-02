@@ -43,6 +43,11 @@ export default function DashboardReports() {
   const revenueOrders = filteredOrders.filter(isRevenueOrder);
   const totalRevenue = revenueOrders.reduce((sum, order) => sum + Number(order.total_amount || 0), 0);
 
+  // Validate all values are numbers
+  const validatedTotalRevenue = isNaN(totalRevenue) ? 0 : totalRevenue;
+  const validatedTotalOrders = isNaN(totalOrders) ? 0 : totalOrders;
+  const validatedTotalCustomers = isNaN(totalCustomers) ? 0 : totalCustomers;
+
   const revenueData = useMemo(() => {
     const buckets = Array.from({ length: rangeDays }).map((_, index) => {
       const date = new Date();
@@ -68,8 +73,8 @@ export default function DashboardReports() {
   }, [filteredOrders, rangeDays]);
 
   const productData = {
-    labels: topProducts.slice(0, 10).map((product) => product.name),
-    datasets: [{ data: topProducts.slice(0, 10).map((product) => product.sales_volume), backgroundColor: '#2563eb', borderRadius: 4 }],
+    labels: (topProducts || []).slice(0, 10).map((product) => product.name || 'Unknown Product'),
+    datasets: [{ data: (topProducts || []).slice(0, 10).map((product) => product.sales_volume || 0), backgroundColor: '#2563eb', borderRadius: 4 }],
   };
 
   const orderStatusData = useMemo(() => {
@@ -86,8 +91,8 @@ export default function DashboardReports() {
     };
   }, [filteredOrders]);
 
-  const averageOrderValue = useMemo(() => revenueOrders.length ? totalRevenue / revenueOrders.length : 0, [revenueOrders.length, totalRevenue]);
-  const conversionRate = useMemo(() => totalOrders ? Math.round((revenueOrders.length / totalOrders) * 100) : 0, [revenueOrders.length, totalOrders]);
+  const averageOrderValue = useMemo(() => revenueOrders.length ? validatedTotalRevenue / revenueOrders.length : 0, [revenueOrders.length, validatedTotalRevenue]);
+  const conversionRate = useMemo(() => validatedTotalOrders ? Math.round((revenueOrders.length / validatedTotalOrders) * 100) : 0, [revenueOrders.length, validatedTotalOrders]);
 
   async function exportCsv() {
     if (exporting) return;
@@ -95,7 +100,7 @@ export default function DashboardReports() {
     try {
       const rows = [
         ['Product', 'Category', 'Sales Volume', 'Stock'],
-        ...topProducts.slice(0, 10).map((product) => [product.name, product.category, product.sales_volume, product.stock_quantity]),
+        ...(topProducts || []).slice(0, 10).map((product) => [product.name || 'Unknown', product.category || 'N/A', product.sales_volume || 0, product.stock_quantity || 0]),
       ];
       const csv = rows.map((row) => row.map((cell) => `"${String(cell).replaceAll('"', '""')}"`).join(',')).join('\n');
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
@@ -138,9 +143,9 @@ export default function DashboardReports() {
         ) : (
           <>
             <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-              <StatCard title="Revenue" value={formatCurrency(totalRevenue, currency)} />
-              <StatCard title="Orders" value={totalOrders} />
-              <StatCard title="Customers" value={totalCustomers} />
+              <StatCard title="Revenue" value={formatCurrency(validatedTotalRevenue, currency)} />
+              <StatCard title="Orders" value={validatedTotalOrders} />
+              <StatCard title="Customers" value={validatedTotalCustomers} />
               <StatCard title="Avg. order value" value={formatCurrency(averageOrderValue, currency)} />
             </div>
             <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
