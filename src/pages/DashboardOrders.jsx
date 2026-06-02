@@ -156,7 +156,7 @@ export default function DashboardOrders() {
                       <td className="table-td">{formatCurrency(order.total_amount, settings?.currency || 'LKR')}</td>
                       <td className="table-td">
                         <div className="flex gap-2">
-                        <button className="rounded-md p-2 text-slate-600 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800" onClick={() => setSelectedOrder(order)} aria-label="View order">
+                        <button className="rounded-md p-2 text-slate-600 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800" onClick={() => setSelectedOrder(order)} aria-label="View order details">
                           <Eye className="h-4 w-4" aria-hidden="true" />
                         </button>
                         <button className="rounded-md p-2 text-rose-600 hover:bg-rose-50 disabled:opacity-50 dark:hover:bg-rose-500/10" disabled={processingOrderId === order.id} onClick={() => setPendingDeleteOrder(order)} aria-label="Delete order">
@@ -220,6 +220,10 @@ function Detail({ label, value }) {
 
 function OrderDetails({ order, currency, onViewSlip }) {
   const items = order.order_items || [];
+  
+  // Handle payment slip URL - ensure it's properly set
+  const paymentSlipUrl = order.payment_slip_url || order.slip_url || null;
+
   return (
     <div className="space-y-5">
       <div className="grid gap-4 sm:grid-cols-2">
@@ -248,10 +252,10 @@ function OrderDetails({ order, currency, onViewSlip }) {
         <p className="mt-1 rounded-md bg-slate-50 p-3 text-sm dark:bg-slate-800">{order.notes || '-'}</p>
       </div>
 
-      {order.payment_slip_url ? (
+      {paymentSlipUrl ? (
         <div>
           <p className="text-xs uppercase text-slate-500 dark:text-slate-400">Payment slip</p>
-          <button type="button" className="btn-secondary mt-2" onClick={() => onViewSlip(order.payment_slip_url)}>
+          <button type="button" className="btn-secondary mt-2" onClick={() => onViewSlip(paymentSlipUrl)}>
             View bank slip
           </button>
         </div>
