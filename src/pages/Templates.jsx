@@ -24,7 +24,36 @@ const PREMADE_TEMPLATES = [
   { id: 'premade-digital', name: 'Digital Products', template_key: 'digital', plan: 'pro', is_premade: true, config: { layout: 'grid', instantDelivery: true, showImages: true } },
   { id: 'premade-restaurant', name: 'Restaurant Ordering', template_key: 'restaurant', plan: 'pro', is_premade: true, config: { layout: 'grid', menu: true, showImages: true } },
   { id: 'premade-premium-business', name: 'Premium Business', template_key: 'premium-business', plan: 'pro', is_premade: true, config: { layout: 'list', b2b: true, showImages: true } },
+  { id: 'premade-compact', name: 'Compact Store', template_key: 'compact', plan: 'free', is_premade: true, config: { layout: 'grid', density: 'compact', showImages: true } },
 ];
+
+// Development helper: verify that PREMADE_TEMPLATES matches the records in Supabase (only runs in dev mode)
+function syncPremadeTemplates() {
+  if (process.env.NODE_ENV !== 'development') return;
+  // Fetch premade templates from Supabase and compare keys
+  supabase
+    .from('order_form_templates')
+    .select('template_key, plan, is_premade')
+    .eq('is_premade', true)
+    .then(({ data, error }) => {
+      if (error) {
+        console.error('Template sync error:', error);
+        return;
+      }
+      const dbKeys = data.map((t) => t.template_key);
+      const localKeys = PREMADE_TEMPLATES.map((t) => t.template_key);
+      const missing = localKeys.filter((k) => !dbKeys.includes(k));
+      const extra = dbKeys.filter((k) => !localKeys.includes(k));
+      if (missing.length || extra.length) {
+        console.warn('Template mismatches detected', { missing, extra });
+      }
+    });
+}
+
+// Call sync on module load (dev only)
+if (process.env.NODE_ENV === 'development') {
+  syncPremadeTemplates();
+}
 
 export default function Templates() {
   const { shop, settings, features, loading: shopLoading, updateFormSettings } = useShop();
@@ -65,7 +94,10 @@ export default function Templates() {
           filtered = PREMADE_TEMPLATES;
         }
 
-        setTemplates(filtered);
+        // Remove duplicate template_key entries while preserving order
+const uniqueTemplates = Array.from(new Map(filtered.map((t) => [t.template_key, t])).values());
+setTemplates(uniqueTemplates);
+
       } catch (caughtError) {
         setError(caughtError);
       } finally {

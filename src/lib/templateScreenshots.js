@@ -18,6 +18,7 @@ export const TEMPLATE_SCREENSHOTS = {
   digital: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=400&q=60',
   restaurant: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=400&q=60',
   'premium-business': 'https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=400&q=60',
+  compact: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=400&q=60',
 };
 
 export const TEMPLATE_CATEGORIES = {
@@ -35,6 +36,7 @@ export const TEMPLATE_CATEGORIES = {
   digital: 'Premium',
   restaurant: 'Premium',
   'premium-business': 'Premium',
+  compact: 'Basic',
 };
 
 export const TEMPLATE_FEATURES = {
@@ -52,6 +54,7 @@ export const TEMPLATE_FEATURES = {
   digital: ['Dark theme', 'Purple gradient', 'Instant delivery', 'Modern'],
   restaurant: ['Menu layout', 'Reservation ready', 'Gold accents', 'Sophisticated'],
   'premium-business': ['B2B ready', 'Professional', 'Blue theme', 'Enterprise grade'],
+  compact: ['Dense grid', 'Compact cards', 'Efficient layout', 'Quick browse'],
 };
 
 /**

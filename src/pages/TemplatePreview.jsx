@@ -1,4 +1,4 @@
-import { ArrowLeft, ShoppingCart } from 'lucide-react';
+import { ArrowLeft, ShoppingCart, Headphones, Shirt, Heart, Chair, Utensils, Pill } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 /* ─── Demo data ────────────────────────────────────────────────────────── */
@@ -188,11 +188,32 @@ const TEMPLATE_CONFIG = {
     layout: 'list',
     tagline: 'Enterprise-grade ordering, simplified.',
   },
+  compact: {
+    name: 'Compact Store',
+    headerBg: '#374151',
+    headerText: '#f9fafb',
+    accent: '#10b981',
+    bodyBg: '#f3f4f6',
+    cardBg: '#ffffff',
+    radius: '6px',
+    font: "'Inter', sans-serif",
+    layout: 'grid',
+    tagline: 'Small footprint, big impact.',
+  },
 };
 
 function ProductCard({ product, config }) {
   const isGrid = config.layout === 'grid';
   const isDark = config.dark;
+
+  const categoryIcons = {
+    Electronics: <Headphones className="h-6 w-6" />, 
+    Fashion: <Shirt className="h-6 w-6" />, 
+    Beauty: <Heart className="h-6 w-6" />, 
+    Furniture: <Chair className="h-6 w-6" />, 
+    Food: <Utensils className="h-6 w-6" />, 
+    Pharmacy: <Pill className="h-6 w-6" />, 
+  };
 
   const cardStyle = {
     background: config.cardBg,
@@ -218,15 +239,17 @@ function ProductCard({ product, config }) {
     fontSize: '2rem',
   };
 
-  const emojis = { Electronics: '🎧', Fashion: '👗', Beauty: '💄', Furniture: '🪑', Food: '🍰', Pharmacy: '💊' };
-  const emoji = emojis[product.category] || '📦';
+
+
 
   return (
     <div style={cardStyle}>
       <div style={imageStyle}>
         {product.image ? (
-          <img src={product.image} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-        ) : null}
+    <img src={product.image} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+  ) : (
+    categoryIcons[product.category] || <div />
+  )}
       </div>
       <div style={{ padding: '12px 14px', flex: 1 }}>
         <p style={{ margin: 0, fontWeight: 600, fontSize: '0.85rem', color: isDark ? '#f1f5f9' : '#1e293b', lineHeight: 1.3 }}>

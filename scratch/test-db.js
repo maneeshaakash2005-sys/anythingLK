@@ -1,77 +1,59 @@
 import { createClient } from '@supabase/supabase-js';
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const envPath = path.join(__dirname, '../.env');
-const envContent = fs.readFileSync(envPath, 'utf8');
+// Read .env manually
+const envPath = path.resolve('.env');
+let supabaseUrl = '';
+let supabaseKey = '';
 
-const getEnvVar = (name) => {
-  const match = envContent.match(new RegExp(`^${name}=(.*)$`, 'm'));
-  return match ? match[1].trim() : null;
-};
-
-const supabaseUrl = getEnvVar('VITE_SUPABASE_URL');
-const supabaseAnonKey = getEnvVar('VITE_SUPABASE_ANON_KEY');
-
-const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    persistSession: false
-  }
-});
-
-async function test() {
-  const email = `test-${Date.now()}@example.com`;
-  const password = 'Password123!';
-
-  console.log('Registering test user...');
-  const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-    email,
-    password,
-    options: {
-      data: { name: 'Test User' }
+try {
+  const envContent = fs.readFileSync(envPath, 'utf8');
+  const lines = envContent.split('\n');
+  for (const line of lines) {
+    const parts = line.split('=');
+    if (parts[0] === 'VITE_SUPABASE_URL') {
+      supabaseUrl = parts[1].trim();
     }
-  });
+    if (parts[0] === 'VITE_SUPABASE_ANON_KEY') {
+      supabaseKey = parts[1].trim();
+    }
+  }
+} catch (err) {
+  console.error('Error reading .env file:', err.message);
+}
 
-  if (signUpError) {
-    console.error('SignUp Error:', signUpError.message);
-    return;
+if (!supabaseUrl || !supabaseKey) {
+  console.error('Could not find VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY in .env');
+  process.exit(1);
+}
+
+const supabase = createClient(supabaseUrl, supabaseKey);
+
+async function testConnection() {
+  console.log('Testing connection to:', supabaseUrl);
+  
+  const { data: reviews, error: reviewsError } = await supabase
+    .from('reviews')
+    .select('*')
+    .limit(1);
+    
+  if (reviewsError) {
+    console.log('Reviews Table Error:', reviewsError.message);
+  } else {
+    console.log('Reviews table exists!', reviews);
   }
 
-  const user = signUpData.user;
-  console.log('Registered user ID:', user.id);
-
-  console.log('Querying shops for this user...');
   const { data: shops, error: shopsError } = await supabase
     .from('shops')
-    .select('*')
-    .eq('owner_id', user.id);
+    .select('marketplace_visible, is_verified')
+    .limit(1);
 
   if (shopsError) {
-    console.error('Shops fetch error:', shopsError.message);
+    console.log('Shops Columns Error:', shopsError.message);
   } else {
-    console.log('Shops found after trigger:', shops);
-  }
-
-  if (!shops || shops.length === 0) {
-    console.log('No shop was created by the trigger. Attempting manual insert...');
-    const { data: insertedShop, error: insertError } = await supabase
-      .from('shops')
-      .insert({
-        owner_id: user.id,
-        shop_name: 'Test Shop',
-        slug: `test-shop-${Date.now()}`,
-        email: email
-      })
-      .select();
-
-    if (insertError) {
-      console.error('Manual Insert Error:', insertError);
-    } else {
-      console.log('Manual Insert Success:', insertedShop);
-    }
+    console.log('Shops marketplace columns exist!', shops);
   }
 }
 
-test();
+testConnection();

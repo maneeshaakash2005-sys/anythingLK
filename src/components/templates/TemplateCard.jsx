@@ -59,6 +59,10 @@ const TEMPLATE_META = {
     category: 'Pro',
     features: ['Professional B2B layout', 'Structured product rows', 'Business checkout section'],
   },
+  compact: {
+    category: 'Basic',
+    features: ['Space-efficient grid layout', 'Dense product cards', 'Streamlined checkout'],
+  },
 };
 
 function getMeta(template) {

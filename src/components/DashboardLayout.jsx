@@ -21,6 +21,7 @@ const links = [
   { to: '/dashboard/billing', label: 'Billing', icon: CreditCard },
   { to: '/dashboard/shop-settings', label: 'Shop Settings', icon: Store },
   { to: '/dashboard/settings', label: 'Profile Settings', icon: Settings },
+  { to: '/dashboard/marketplace', label: 'Marketplace', icon: Store },
 ];
 
 export default function DashboardLayout({ title, actions, children }) {

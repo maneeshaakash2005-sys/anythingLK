@@ -3,6 +3,8 @@ import { Route, Routes } from 'react-router-dom';
 import AdminRoute from './components/AdminRoute';
 import ErrorBoundary from './components/ErrorBoundary';
 import LoadingSkeleton from './components/LoadingSkeleton';
+import { useDomainDetect } from './hooks/useDomainDetect';
+const MarketplaceHome = lazy(() => import('./pages/MarketplaceHome'));
 import NotFound from './components/NotFound';
 import ProtectedRoute from './components/ProtectedRoute';
 import RealtimeToasts from './components/RealtimeToasts';
@@ -38,6 +40,7 @@ function RouteFallback() {
 }
 
 export default function App() {
+  const { isMarketplace } = useDomainDetect();
   return (
     <>
       <SilentErrorBoundary>
@@ -45,7 +48,7 @@ export default function App() {
       </SilentErrorBoundary>
       <Suspense fallback={<RouteFallback />}>
         <Routes>
-          <Route path="/" element={<Landing />} />
+          <Route path="/" element={isMarketplace ? <MarketplaceHome /> : <Landing />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/pricing" element={<Pricing />} />
